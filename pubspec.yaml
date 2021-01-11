@@ -14,6 +14,9 @@ dependencies:
   cupertino_icons: ^1.0.0
   # 加载更多
   pull_to_refresh: ^1.6.3
+  flutter_blue: ^0.7.3
+  # UUID
+  uuid: ^2.2.2
   base:
     path: ../simple/base
 dev_dependencies:
