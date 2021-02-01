@@ -1,7 +1,6 @@
 import 'package:base/util/util_router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_bluttooth_debugging/res/colours.dart';
 import 'package:uuid/uuid.dart';
 
@@ -15,97 +14,44 @@ class BluetoothDevicePage extends StatefulWidget {
 }
 
 class _BluetoothDevicePageState extends State<BluetoothDevicePage> {
-  ScanResult scanResult;
-
-  // List<BluetoothServiceExpanded> _dataList = <BluetoothServiceExpanded>[];
-  List<BluetoothServiceExpanded> _dataList = List.generate(20, (index) => BluetoothServiceExpanded(null, false));
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        titleSpacing: 0,
-        title: Container(
-          child: ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(scanResult?.advertisementData?.localName ?? "title", style: TextStyle(color: Colors.white)),
-              subtitle: Text(scanResult?.device?.id?.toString() ?? "subtitle", style: TextStyle(color: Colors.white))),
-        ),
-        actions: [
-          Container(alignment: Alignment.center, padding: EdgeInsets.symmetric(vertical: 3, horizontal: 8), child: Text("断开")),
-          Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-        ],
-      ),
-      body: SingleChildScrollView(child: Container(width: double.infinity, child: _buildExpansionPanelList())),
+      appBar: AppBar(title: Text("Device")),
+      body: SizedBox(
+          width: double.infinity,
+          height: double.infinity,
+          child: SingleChildScrollView(
+              child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: _buildChild(),
+          ))),
     );
   }
 
-  Widget _buildExpansionPanelList() => ExpansionPanelList(
-        elevation: 0,
-        expansionCallback: (index, isExpanded) => setState(() => _dataList[index].isExpanded = !isExpanded),
-        children: _dataList.map((e) => ExpansionPanel(isExpanded: e.isExpanded, headerBuilder: (BuildContext context, bool isExpanded) => _buildExpansionHeader(context, isExpanded, e), body: _buildExpansionBody(e))).toList(),
-      );
-
-  Widget _buildExpansionHeader(BuildContext context, bool isExpanded, BluetoothServiceExpanded e) {
-    return ListTile(title: Text("Service Name", style: TextStyle(color: Colours.black333, fontWeight: FontWeight.w400, fontSize: 16)), subtitle: Text("UUID  ${Uuid().v1().toString()}", style: TextStyle(fontSize: 12)));
+  List<Widget> _buildChild() {
+    var list = <Widget>[];
+    list.add(_buildHead());
+    return list;
   }
 
-  Widget _buildExpansionBody(BluetoothServiceExpanded serviceExpanded) {
-    // var characteristics = serviceExpanded.service?.characteristics;
-    var characteristics = List.generate(5, (index) => "").toList();
-    var childList = characteristics
-        ?.map((e) => Container(
-              decoration: BoxDecoration(border: Border(top: BorderSide(color: Colors.grey[300]))),
-              width: double.infinity,
-              margin: EdgeInsets.only(left: 20,right: 10),
-              child: Stack(
-                alignment: Alignment.centerLeft,
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                  Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-                  Text("Device name", style: TextStyle(fontSize: 14, color: Colours.black333, fontWeight: FontWeight.w500)),
-                  Padding(padding: EdgeInsets.symmetric(vertical: 3)),
-                  Text("UUID  ${Uuid().v1().toString()}", style: TextStyle(fontSize: 12, color: Colours.black666)),
-                  Padding(padding: EdgeInsets.symmetric(vertical: 3)),
-                  Text("Properties: READ WRITE NOTIFY", style: TextStyle(fontSize: 12, color: Colours.black666)),
-                  Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-                    ],
-                  ),
-                  Positioned(
-                    right: 0,
-                    top: 5,
-                    child: Row(
-                      mainAxisSize:MainAxisSize.min,
-                      children: [
-                      SizedBox(width: 36, height: 36, child: IconButton(icon: Icon(Icons.upload_rounded, color: Theme.of(context).primaryColor), onPressed: null)),
-                      SizedBox(width: 36, height: 36, child: IconButton(icon: Icon(Icons.download_rounded, color: Theme.of(context).primaryColor), onPressed: null)),
-                      SizedBox(width: 36, height: 36, child: IconButton(icon: Icon(Icons.notification_important_rounded, color: Theme.of(context).primaryColor), onPressed: null)),
-                    ],),
-                  )
-                ],
-              ),
-            ))
-        ?.toList();
-    return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: childList);
-  }
-}
-
-class BluetoothServiceExpanded {
-  BluetoothService service;
-  bool isExpanded;
-
-  BluetoothServiceExpanded(this.service, this.isExpanded);
-
-  @override
-  String toString() {
-    return 'BluetoothServiceExpanded{service: $service, isExpanded: $isExpanded}';
+  Widget _buildHead() {
+  return  Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(left: 40,right: 40,top: 20,bottom: 20),
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.grey[400])),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          RichText(text: TextSpan(text: "蓝牙名称:", style: TextStyle(fontSize: 12, color: Colours.black333), children: <InlineSpan>[TextSpan(text: "DeviceName", style: TextStyle(fontSize: 12, color: Colours.black666))])),
+          RichText(text: TextSpan(text: "服务:", style: TextStyle(fontSize: 12, color: Colours.black333), children: <InlineSpan>[TextSpan(text: Uuid().v1().toString(), style: TextStyle(fontSize: 12, color: Colours.black666))])),
+          RichText(text: TextSpan(text: "广播:", style: TextStyle(fontSize: 12, color: Colours.black333), children: <InlineSpan>[TextSpan(text: Uuid().v1().toString()*3, style: TextStyle(fontSize: 12, color: Colours.black666))])),
+        ],
+      ),
+    );
   }
 }

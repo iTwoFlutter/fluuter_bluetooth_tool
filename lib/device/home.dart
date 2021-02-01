@@ -65,6 +65,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             Spacer(),
+            IconButton(icon: Icon(Icons.threed_rotation), onPressed: () => showBroadcastDialog(context)),
             Text("-90 dBm", style: TextStyle(fontSize: 12, color: Colours.black999)),
             Padding(padding: EdgeInsets.symmetric(horizontal: 8)),
           ],
@@ -109,4 +110,34 @@ class _HomePageState extends State<HomePage> {
           );
         });
   }
+
+  showBroadcastDialog(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (ctx) {
+          return Container(
+              margin: EdgeInsets.all(10),
+              width: double.infinity,
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
+              padding: EdgeInsets.all(15),
+              child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: [
+                SizedBox(
+                  width: double.infinity,
+                  height: 25,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Text("广播",style: TextStyle(fontSize: 16)),
+                      Positioned(right: 10, child: IconButton(icon: Icon(Icons.copy,size: 20), onPressed: () {})),
+                    ],
+                  ),
+                ),
+                Padding(padding: EdgeInsets.symmetric(vertical: 10)),
+                Container(child: Text("Text" * 20), padding: EdgeInsets.all(10), decoration: BoxDecoration(border: Border.all(color: Colors.grey[400])))
+              ]));
+        });
+  }
+
+  void getData() {}
 }
